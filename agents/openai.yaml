@@ -1,0 +1,4 @@
+interface:
+  display_name: "OPERA Simulation"
+  short_description: "Build, automate, post-process, and track particles in OPERA"
+  default_prompt: "Use $opera-simulation to plan, script, post-process, particle-track, and validate an OPERA simulation."

@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# OPERA/vendor and user-generated artifacts must not be committed.
+*.op2
+*.op3
+*.opc
+*.track
+*.db
+*.pdf
+cases/
+results/
+preflight.json

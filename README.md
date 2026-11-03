@@ -1,6 +1,6 @@
 # OPERA Simulation Skill
 
-[![Validate skill](https://github.com/zxcvbnm22003Hyl/OPERA-simulation-Skill/actions/workflows/validate.yml/badge.svg)](https://github.com/zxcvbnm22003Hyl/OPERA-simulation-Skill/actions/workflows/validate.yml)
+[![Validate skill](https://github.com/HeryAI4S/OPERA-simulation-Skill/actions/workflows/validate.yml/badge.svg)](https://github.com/HeryAI4S/OPERA-simulation-Skill/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A reusable Agent Skill for planning, scripting, automating, post-processing, and validating CST Studio Suite OPERA 2D/3D electromagnetic simulations. It includes guidance for COMI, OPERA Python/`operafea`, accelerator magnets, particle tracking, transient losses, parameter studies, and electromagnetic-thermal-motion workflows.
@@ -16,6 +16,9 @@ A reusable Agent Skill for planning, scripting, automating, post-processing, and
 - Distinguish transient Joule, eddy-current, hysteresis, periodic iron, and thermal-loss paths.
 - Prepare isolated parameter studies with static preflight and machine-readable result contracts.
 - Reject incomplete solver/Post evidence instead of treating process exit as physical acceptance.
+- Initialize new engineering projects with an explicit unsolved contract.
+- Diagnose solver threads separately from Post threads and concurrent jobs.
+- Integrate completed transient solver loss logs into auditable CSV/JSON histories.
 
 ## Prerequisites
 
@@ -32,13 +35,13 @@ The skill is documentation and automation guidance; it is not an OPERA solver an
 
 ```powershell
 $skillDirectory = Join-Path $env:USERPROFILE '.codex\skills\opera-simulation'
-git clone https://github.com/zxcvbnm22003Hyl/OPERA-simulation-Skill.git $skillDirectory
+git clone https://github.com/HeryAI4S/OPERA-simulation-Skill.git $skillDirectory
 ```
 
 ### Codex on macOS or Linux
 
 ```bash
-git clone https://github.com/zxcvbnm22003Hyl/OPERA-simulation-Skill.git \
+git clone https://github.com/HeryAI4S/OPERA-simulation-Skill.git \
   "${CODEX_HOME:-$HOME/.codex}/skills/opera-simulation"
 ```
 
@@ -63,6 +66,8 @@ agents/openai.yaml
 references/                 # focused OPERA workflow and evidence references
 scripts/comi_preflight.py   # static COMI safety/preparation checks
 scripts/run_cases.py        # isolated case preparation and opt-in execution
+scripts/init_project.py     # new unsolved project and engineering contract
+scripts/extract_solver_loss.py # completed single-run transient loss extraction
 tests/validate_repository.py
 ```
 
@@ -74,8 +79,11 @@ Run the repository checks from the clone root:
 
 ```powershell
 python -m unittest -v tests.validate_repository
+python -m unittest -v tests.test_workflows
 python scripts\comi_preflight.py --help
 python scripts\run_cases.py --help
+python scripts\init_project.py --help
+python scripts\extract_solver_loss.py --help
 ```
 
 The validation checks skill discovery frontmatter, required files, relative Markdown links, local anchors, Python syntax, private absolute paths, and accidental inclusion of vendor/user artifacts. CI runs the same checks on Windows and Linux.

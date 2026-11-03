@@ -32,6 +32,7 @@ Ask only for information that materially changes physics or destructive actions.
 
 Read the relevant reference before generating code:
 
+- Read [new projects and runtime evidence](references/project-and-runtime-evidence.md) for new engineering projects, CPU/thread diagnosis, solver-setting audits, or loss extraction from completed solver logs. Use `scripts/init_project.py` to scaffold a new project without launching OPERA and `scripts/extract_solver_loss.py` for supported single-run transient logs.
 - Read [COMI and automation](references/comi-and-automation.md) for file naming, templates, batch design, and validation.
 - Read [COMI command atlas](references/comi-command-atlas.md) when selecting/reviewing OPERA-2d or OPERA-3d commands, their program context, command state, and required ordering.
 - Read [OPERA-3d modeller, labels and mesh](references/modeller-geometry-and-mesh.md) before constructing/editing OP3 geometry, assigning materials/boundaries, or creating a mesh/database.

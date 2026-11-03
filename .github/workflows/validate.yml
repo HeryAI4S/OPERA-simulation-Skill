@@ -20,8 +20,10 @@ jobs:
         with:
           python-version: "3.12"
       - name: Validate repository
-        run: python -m unittest -v tests.validate_repository
+        run: python -m unittest discover -s tests -p '*.py' -v
       - name: Exercise helper entry points
         run: |
           python scripts/comi_preflight.py --help
           python scripts/run_cases.py --help
+          python scripts/field_quality.py prepare --help
+          python scripts/field_quality.py evaluate --help

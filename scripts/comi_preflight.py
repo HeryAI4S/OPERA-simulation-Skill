@@ -27,7 +27,9 @@ COMINPUT_RE = re.compile(
     r"\$COMINPUT\s+(?:'([^']+)'|\"([^\"]+)\"|([^\s|,]+))", re.IGNORECASE
 )
 FILE_VALUE_RE = re.compile(
-    r"\b(?:FILE|FILENAME|OUTFILE|INFILE)\s*=\s*([^,|]+)", re.IGNORECASE
+    r"\b(?:FILE|FILENAME|OUTFILE|INFILE)\s*=\s*"
+    r"(%QUOTE(?:<[^>]*>|\([^)]*\))|'[^']*'|\"[^\"]*\"|.*?)"
+    r"(?=\s+[+-]?[A-Za-z]\w*\s*=|[,|]|$)", re.IGNORECASE
 )
 
 
@@ -63,7 +65,7 @@ def _is_comment(line: str) -> bool:
 
 
 def _local_include(parent: Path, raw_name: str) -> Path:
-    candidate = Path(raw_name.replace("/", "\\"))
+    candidate = Path(raw_name.replace("\\", "/"))
     if not candidate.suffix:
         candidate = candidate.with_suffix(".comi")
     return candidate if candidate.is_absolute() else parent / candidate
@@ -85,6 +87,7 @@ def analyse_file(path: Path, allowed_variables: set[str] | None = None) -> list[
     used: dict[str, int] = {}
     model_created = False
     surface_meshed = False
+    blocks: list[tuple[str, int]] = []
 
     for number, raw_line in _source_lines(path):
         line = raw_line.strip()
@@ -94,6 +97,20 @@ def analyse_file(path: Path, allowed_variables: set[str] | None = None) -> list[
         definition = DEFINE_RE.match(line)
         if definition:
             defined.add(_normalise_variable(definition.group(1)))
+        loop = re.match(r"^\$(?:DO|FOR)\s+(#[A-Za-z][A-Za-z0-9_]*)\b", line, re.IGNORECASE)
+        if loop:
+            defined.add(_normalise_variable(loop.group(1)))
+        opening = re.match(r"^\$(IF|DO|FOR|WHILE)\b", line, re.IGNORECASE)
+        closing = re.match(r"^\$END\s+(IF|DO|FOR|WHILE)\b", line, re.IGNORECASE)
+        if opening:
+            blocks.append((opening.group(1).upper(), number))
+        elif closing:
+            kind = closing.group(1).upper()
+            if not blocks or blocks[-1][0] != kind:
+                issues.append(Issue("error", "block-mismatch", str(path), number,
+                                    f"Unmatched $END {kind}"))
+            else:
+                blocks.pop()
 
         for variable in VARIABLE_RE.findall(line):
             key = _normalise_variable(variable)
@@ -205,6 +222,9 @@ def analyse_file(path: Path, allowed_variables: set[str] | None = None) -> list[
                     )
                 )
 
+    for kind, first_line in blocks:
+        issues.append(Issue("error", "unclosed-block", str(path), first_line,
+                            f"Missing $END {kind}"))
     for variable, first_line in sorted(used.items()):
         if variable not in defined:
             issues.append(

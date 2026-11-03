@@ -32,6 +32,7 @@ Ask only for information that materially changes physics or destructive actions.
 
 Read the relevant reference before generating code:
 
+- Read [scan-magnet integral field and DCT adjustment](references/scan-magnet-dct-workflow.md) for scan-magnet uniformity, fringe-field integration bounds, higher-order DCT compensation or pole-turn placement. Use `scripts/field_quality.py` to prepare Post COMI and independently audit its outputs without launching OPERA.
 - Read [COMI and automation](references/comi-and-automation.md) for file naming, templates, batch design, and validation.
 - Read [COMI command atlas](references/comi-command-atlas.md) when selecting/reviewing OPERA-2d or OPERA-3d commands, their program context, command state, and required ordering.
 - Read [OPERA-3d modeller, labels and mesh](references/modeller-geometry-and-mesh.md) before constructing/editing OP3 geometry, assigning materials/boundaries, or creating a mesh/database.
@@ -79,6 +80,8 @@ Keep geometry/physics parameters in one clearly labelled source of truth. Use st
 5. **Scale** — only after the baseline and one changed case pass. Stop or mark failed cases rather than silently using partial output.
 
 For a field-quality or magnet task, independently sanity-check symmetry/parity, current sign, expected dominant harmonic, and normalization radius before trusting multipole results.
+
+For design optimization, compare candidates on a consistent mesh/sampling setup before spending time on final refinement. Respect requests to reuse existing results or prepare files only. Report geometry preparation, numeric field pass, sampling convergence and finite-element mesh convergence as separate evidence states; a changed geometry cannot inherit an earlier case's result.
 
 ## COMI and Python rules
 

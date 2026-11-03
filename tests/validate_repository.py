@@ -18,6 +18,9 @@ REQUIRED_FILES = {
     "agents/openai.yaml",
     "scripts/comi_preflight.py",
     "scripts/run_cases.py",
+    "scripts/field_quality.py",
+    "assets/field-quality/post.comi.in",
+    "references/scan-magnet-dct-workflow.md",
     "references/documentation-map.md",
     "references/transient-losses.md",
 }
@@ -29,9 +32,12 @@ FORBIDDEN_SUFFIXES = {
     ".track",
     ".pyc",
     ".pdf",
+    ".cond",
+    ".bh",
+    ".res",
 }
 
-TEXT_SUFFIXES = {".md", ".py", ".yaml", ".yml", ".json", ".toml"}
+TEXT_SUFFIXES = {".md", ".py", ".yaml", ".yml", ".json", ".toml", ".in", ".comi"}
 
 
 def markdown_slug(title: str) -> str:

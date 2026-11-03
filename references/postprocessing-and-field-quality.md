@@ -87,6 +87,11 @@ Do not use default contour limits in a regression check. Specify a fixed range f
 
 ## Integrated field and harmonics
 
+For executable Post preparation, direct two-axis uniformity reduction and an
+independent raw-data audit, use the [scan-magnet/DCT workflow](scan-magnet-dct-workflow.md)
+and `scripts/field_quality.py`. Integration ranges and component conventions are
+explicit inputs; successful numeric auditing does not establish mesh convergence.
+
 ### Three distinct quantities
 
 Keep these results separate in filenames, tables and prose:

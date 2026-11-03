@@ -1,6 +1,6 @@
 # OPERA Simulation Skill
 
-[![Validate skill](https://github.com/zxcvbnm22003Hyl/OPERA-simulation-Skill/actions/workflows/validate.yml/badge.svg)](https://github.com/zxcvbnm22003Hyl/OPERA-simulation-Skill/actions/workflows/validate.yml)
+[![Validate skill](https://github.com/HeryAI4S/OPERA-simulation-Skill/actions/workflows/validate.yml/badge.svg)](https://github.com/HeryAI4S/OPERA-simulation-Skill/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A reusable Agent Skill for planning, scripting, automating, post-processing, and validating CST Studio Suite OPERA 2D/3D electromagnetic simulations. It includes guidance for COMI, OPERA Python/`operafea`, accelerator magnets, particle tracking, transient losses, parameter studies, and electromagnetic-thermal-motion workflows.
@@ -13,6 +13,8 @@ A reusable Agent Skill for planning, scripting, automating, post-processing, and
 - Design version-aware COMI and `operafea` automation.
 - Build accelerator-magnet geometry, conductor, material, mesh, and analysis workflows.
 - Extract fields, integrated quantities, harmonics, forces, trajectories, and beam statistics.
+- Prepare configurable two-axis integral-field Post COMI and independently audit complete disk samples, extrema, tail checks and summary consistency.
+- Apply DCT harmonic/pole-turn adjustments with separate geometry, numeric-pass and convergence evidence.
 - Distinguish transient Joule, eddy-current, hysteresis, periodic iron, and thermal-loss paths.
 - Prepare isolated parameter studies with static preflight and machine-readable result contracts.
 - Reject incomplete solver/Post evidence instead of treating process exit as physical acceptance.
@@ -32,13 +34,13 @@ The skill is documentation and automation guidance; it is not an OPERA solver an
 
 ```powershell
 $skillDirectory = Join-Path $env:USERPROFILE '.codex\skills\opera-simulation'
-git clone https://github.com/zxcvbnm22003Hyl/OPERA-simulation-Skill.git $skillDirectory
+git clone https://github.com/HeryAI4S/OPERA-simulation-Skill.git $skillDirectory
 ```
 
 ### Codex on macOS or Linux
 
 ```bash
-git clone https://github.com/zxcvbnm22003Hyl/OPERA-simulation-Skill.git \
+git clone https://github.com/HeryAI4S/OPERA-simulation-Skill.git \
   "${CODEX_HOME:-$HOME/.codex}/skills/opera-simulation"
 ```
 
@@ -55,6 +57,29 @@ including conductor loss, eddy-current loss, Post integration, and TEMPOTR trans
 
 The entry point is [`SKILL.md`](SKILL.md). It routes tasks to the focused material in [`references/`](references/) and the reusable helpers in [`scripts/`](scripts/).
 
+## Scan-magnet field-quality functionality
+
+For an existing magnet case, generate integral-field Post without launching OPERA:
+
+```powershell
+python scripts/field_quality.py prepare --database ./case/magnet.op3 --out ./post-screen --half-range-mm 950 --check-range-mm 850 --inner-radius-mm 25 --outer-radius-mm 35 --target-tm 0.20
+```
+
+After a real Post run, independently audit the signed raw integrals and compare
+with the COMI summary:
+
+```powershell
+python scripts/field_quality.py evaluate ./post-screen/field_quality.json --out ./post-screen/audit.json
+```
+
+The values shown are a scan-magnet example, not universal integration lengths or
+acceptance limits. Read [scan-magnet integral field and DCT adjustment](references/scan-magnet-dct-workflow.md)
+for component conventions, input options, record schemas, design-adjustment
+rules and evidence boundaries. Preparation, a numeric field pass, sampling
+convergence and mesh convergence remain separate states. These helpers add
+functionality to an existing project; they do not create a new project or run a
+solver automatically.
+
 ## Repository layout
 
 ```text
@@ -63,6 +88,8 @@ agents/openai.yaml
 references/                 # focused OPERA workflow and evidence references
 scripts/comi_preflight.py   # static COMI safety/preparation checks
 scripts/run_cases.py        # isolated case preparation and opt-in execution
+scripts/field_quality.py    # Post preparation and independent numeric auditing
+assets/field-quality/       # generated-Post template; no user models/results
 tests/validate_repository.py
 ```
 
@@ -73,9 +100,10 @@ No OPERA manuals, binaries, licence files, `.op2`/`.op3` databases, trajectories
 Run the repository checks from the clone root:
 
 ```powershell
-python -m unittest -v tests.validate_repository
+python -m unittest discover -s tests -p '*.py' -v
 python scripts\comi_preflight.py --help
 python scripts\run_cases.py --help
+python scripts\field_quality.py --help
 ```
 
 The validation checks skill discovery frontmatter, required files, relative Markdown links, local anchors, Python syntax, private absolute paths, and accidental inclusion of vendor/user artifacts. CI runs the same checks on Windows and Linux.

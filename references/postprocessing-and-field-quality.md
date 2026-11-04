@@ -124,12 +124,14 @@ They may agree only when the component convention, transverse reference path, we
 
 1. Run a centre-point check at low current; confirm expected field direction/dominant order.
 2. Check the same reference radius at two azimuthal and longitudinal sample densities; compare dominant and significant error harmonics.
-3. Vary radius inside the good-field aperture. Well-resolved normalised multipole interpretation should be physically consistent; a strong unexplained radius trend flags geometry, normalization or sampling issues.
+3. Vary radius inside the good-field aperture and compare at a common reference radius. Under approximately 2D source-free assumptions, raw order-n fields scale as radius to power n-1, and relative units normalized to order m scale as radius to power n-m. A large high-order radius trend alone is not an error. Use [integrated-harmonic diagnostics](integrated-harmonic-diagnostics.md) for parity, finite-endpoint caveats and numerical-floor checks.
 4. Reverse current in a linear material baseline. Signed field and signed coefficients should reverse; normalised relative errors may stay unchanged. Explain any nonlinear/hysteretic exception.
 5. Compare symmetry-related points. A forbidden parity component is a high-value diagnostic for boundary, coil-sign or frame mistakes.
 6. Save raw coefficients, amplitudes, reference radius, main-harmonic definition and normalization factor—not only “units”.
 
 Avoid normalizing to a numerically tiny main harmonic. Detect `ABS(main)<tolerance`, emit a failed/undefined status, and preserve raw values instead of generating misleading large relative units.
+
+The normalized main value of `10000` is an identity, not evidence of equal absolute fields or correct case loading. Retain numeric case/time identity and raw signed main coefficients with units. Literal `TTIME` in an export requires a format/load-identity check before comparison. Full-circle integration of an octant model requires verified vector reflection, not scalar loss multiplication; follow the [symmetry and identity diagnostics](integrated-harmonic-diagnostics.md).
 
 ## Forces, energy and volume quantities
 

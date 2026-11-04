@@ -49,6 +49,16 @@ class LossTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.parse(self.log().replace('from 0.5 to 1', 'from 0.7 to 1'), initial_power=0)
 
+    def test_step_with_power_then_retry_from_previous_time_rejected(self):
+        # A trial endpoint can print power before a rollback/retry. It is not an accepted history.
+        text = self.log().replace(
+            'Performing full step from 0.5 to 1',
+            'Performing full step from 0 to 0.25\n'
+            'Ohm Loss in meshed volume = 3 [W]\n'
+            'Performing full step from 0.25 to 1')
+        with self.assertRaises(ValueError):
+            self.parse(text, initial_power=0)
+
     def test_missing_final_power_rejected(self):
         with self.assertRaises(ValueError):
             self.parse(self.log().replace('Ohm Loss in meshed volume = 2 [W]', ''), initial_power=0)

@@ -18,8 +18,12 @@ REQUIRED_FILES = {
     "agents/openai.yaml",
     "scripts/comi_preflight.py",
     "scripts/run_cases.py",
+    "scripts/audit_material_loss.py",
     "references/documentation-map.md",
     "references/transient-losses.md",
+    "references/native-loss-and-symmetry-audit.md",
+    "references/integrated-harmonic-diagnostics.md",
+    "references/project-derived-lessons.md",
 }
 
 FORBIDDEN_SUFFIXES = {

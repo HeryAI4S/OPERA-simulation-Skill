@@ -125,6 +125,8 @@ The 3D reference states:
 
 Therefore, never apply one global symmetry multiplier to every reported quantity. Store a per-observable symmetry policy and test it on a hand-checkable model fraction.
 
+Activation metadata saying no symmetry does not prove full physical coverage: geometry can still be an unexpanded octant. Material-sum/solver-total agreement establishes accounting within their common domain, not whole-magnet loss. Use the [native material and symmetry audit](native-loss-and-symmetry-audit.md) to check extents, volumes, boundaries, source replication and prior expansion before applying a scalar factor. Integrate each material directly in the same field solution; conductivity-on/off total differences include changes in other regions and are not generally the removed material's loss.
+
 ### Time sampling contract
 
 Include the following times in the output schedule:

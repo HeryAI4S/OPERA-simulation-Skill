@@ -19,6 +19,10 @@ A reusable Agent Skill for planning, scripting, automating, post-processing, and
 - Initialize new engineering projects with an explicit unsolved contract.
 - Diagnose solver threads separately from Post threads and concurrent jobs.
 - Integrate completed transient solver loss logs into auditable CSV/JSON histories.
+- Audit native material loss exports, distinguish mesh-domain closure from whole-magnet coverage, and record explicit symmetry reconstruction.
+- Diagnose octant vector symmetry, case/time identity, absolute integrated fields and radius-dependent high harmonics.
+
+The [project-derived lessons](references/project-derived-lessons.md) summarize the transient dipole/shield workflow that motivated these checks. 中文项目经验总结：材料分项闭合不等于整机覆盖；对称倍率须由几何、边界和激活状态共同确认；积分谐波应保留绝对主场、明确保存时刻并验证矢量反射；关闭电导率的总量差不能直接当作原模型的部件损耗。
 
 ## Prerequisites
 
@@ -68,6 +72,7 @@ scripts/comi_preflight.py   # static COMI safety/preparation checks
 scripts/run_cases.py        # isolated case preparation and opt-in execution
 scripts/init_project.py     # new unsolved project and engineering contract
 scripts/extract_solver_loss.py # completed single-run transient loss extraction
+scripts/audit_material_loss.py # native material export and explicit domain audit
 tests/validate_repository.py
 ```
 
@@ -80,10 +85,12 @@ Run the repository checks from the clone root:
 ```powershell
 python -m unittest -v tests.validate_repository
 python -m unittest -v tests.test_workflows
+python -m unittest -v tests.test_material_loss
 python scripts\comi_preflight.py --help
 python scripts\run_cases.py --help
 python scripts\init_project.py --help
 python scripts\extract_solver_loss.py --help
+python scripts\audit_material_loss.py --help
 ```
 
 The validation checks skill discovery frontmatter, required files, relative Markdown links, local anchors, Python syntax, private absolute paths, and accidental inclusion of vendor/user artifacts. CI runs the same checks on Windows and Linux.
